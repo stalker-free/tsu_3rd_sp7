@@ -1,10 +1,9 @@
 package w4;
 
-
-/** 
+/**
  * Односвязный список целых чисел 
  */
-public class SinglyLinkedList 
+public class SinglyLinkedList
 {
     private class Node
     {
@@ -23,24 +22,13 @@ public class SinglyLinkedList
         public int size()
         {
             int size = 0;
-            Node cur = top;
-            while(cur != null)
+            Node current = top;
+            while(current != null)
             {
                 ++size;
-                cur = cur.next;
+                current = current.next; // Переход на следующий узел.
             }
             return size;
-        }
-
-        /**
-         * Меняет местами значения, хранящиеся в узлах.
-         * @param node другой узел.
-         */
-        public void swapValues(Node node)
-        {
-            int temp = this.value;
-            this.value = node.value;
-            node.value = temp;
         }
     }
     
@@ -48,20 +36,20 @@ public class SinglyLinkedList
     private int size = 0;
     
     /**
-     * Добавляет число i в конец списка
-     * @param i
+     * Добавляет число i в конец списка.
+     * @param i вставляемое в список значение.
      */
     public void push_back(Integer i)
     {
-        Node tmp = new Node(i);
-        tmp.next = top;
-        top = tmp;
+        Node newTop = new Node(i);
+        newTop.next = top;
+        top = newTop;
         ++size;
     }
 
     /**
-     * Изымает последний добавленный элемент списка
-     * @return
+     * Изымает последний добавленный элемент списка.
+     * @return значение извлечённого элемента.
      */
     public Integer pop_back() 
     {
@@ -69,9 +57,11 @@ public class SinglyLinkedList
         {
             throw new RuntimeException("list is empty!");
         }
+
+	    Integer remaining = top.value;
         top = top.next;
         --size;
-        return top.next.value;
+        return remaining;
     }
 
     /**
@@ -84,73 +74,94 @@ public class SinglyLinkedList
 
     /**
      * Сортировка слиянием.
-     * @param currentNode текущий узел
+     * @param first текущий узел.
      * @return Узел из отсортированного списка.
      */
-    private Node mergeSort(Node first, int len)
+    private Node mergeSort(Node first, int length)
     {
-        if(len < 2) return first;
+        if(length < 2) return first; // Возращаем исходный узел.
+
         Node second = first;
-        int center = (int)(len / 2) - 1;
+	    // Поиск середины.
+        int center = (int)(length / 2) - 1;
         for(int i = 0 ; i < center ; ++i)
         {
             second = second.next;
         }
+	    // Разделение данного списка на два маленьких.
         second = divide(second);
+
+	    // Слияние 2 отсортированных списков в один.
         ++center;
         return merge(mergeSort(first, center),
-                mergeSort(second, len - center));
+                mergeSort(second, length - center));
     }
 
     /** Слияние 2 массивов
      * @param firstNode
      * @param secondNode
-     * @return centerNode + secondNode
+     * @return firstNode + secondNode
      */
-     private Node merge(Node first, Node second)
+     private Node merge(Node firstNode, Node secondNode)
      {
-         if(first == null) return second;
-         if(second == null) return first;
+	     // Страховка от нулевых указателей.
+         if(firstNode == null) return secondNode;
+         if(secondNode == null) return firstNode;
+
+	     // Передача результирующему списку первого узла.
          Node result;
-         if(first.value < second.value)
+         if(firstNode.value < secondNode.value)
          {
-             result = divide(first);
-             first = first.next;
+             result = firstNode;
+             firstNode = firstNode.next; // Переход в следующий узел.
          }
          else
          {
-             result = divide(second);
-             second = second.next; // не работает
+             result = secondNode;
+             secondNode = secondNode.next;
          }
+
+	     // Задание указателя.
          Node it = result;
-         while(!( (first == null) || (second == null) ))
+	     // Объединение списков.
+         while(!( (firstNode == null) || (secondNode == null) ))
          {
-             it.next = (first.value < second.value) ?
-                divide(first) : divide(second);
+	         if(firstNode.value < secondNode.value)
+	         {
+		         it.next = firstNode;
+		         firstNode = firstNode.next;
+	         }
+	         else
+	         {
+		         it.next = secondNode;
+		         secondNode = secondNode.next;
+	         }
              it = it.next;
          }
-         it.next = (first == null) ? second : first;
+
+	     // Заполнение конца оставшимся списком.
+         it.next = (firstNode == null) ? secondNode : firstNode;
          return result;
      }
 
      /**
       * Делит список на 2 части.
-      * @param list список, от которого отделяют другой список
-      * @return Отделенный список от исходного
+      * @param head список, от которого отделяют другой список.
+      * @return Отделенный список от исходного.
       */
-    private static Node divide(Node list)
+    private static Node divide(Node head)
     {
-        if(list == null)
+        if(head == null)
         {
             return null;
         }
-        else if(list.next == null)
+        else if(head.next == null)
         {
-            return list;
+            return head;
         }
-        Node res = list.next;
-        list.next = null;
-        return res;
+        Node tail = head.next; // Выделение концевого списка.
+        head.next = null; // Отсечение концевого списка от исходного.
+        return tail;
     }
 
     public static void print(SinglyLinkedList arr)
