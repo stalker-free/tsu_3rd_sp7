@@ -110,7 +110,7 @@ public class SinglyLinkedList
 
 	     // Передача результирующему списку первого узла.
          Node result;
-         if(firstNode.value < secondNode.value)
+         if(firstNode.value > secondNode.value)
          {
              result = firstNode;
              firstNode = firstNode.next; // Переход в следующий узел.
@@ -126,7 +126,7 @@ public class SinglyLinkedList
 	     // Объединение списков.
          while(!( (firstNode == null) || (secondNode == null) ))
          {
-	         if(firstNode.value < secondNode.value)
+	         if(firstNode.value > secondNode.value)
 	         {
 		         it.next = firstNode;
 		         firstNode = firstNode.next;
