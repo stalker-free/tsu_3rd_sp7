@@ -29,6 +29,11 @@ public class Task2
         System.out.println();
     }
     
+    public static int[] remove(int[] array, int m, int n)
+    {
+        return cutFromTo(array, m, n - 1);
+    }
+    
     /**
      * Удаляет диапазон элементов из массива. 
      * @param array - данный массив
@@ -36,7 +41,7 @@ public class Task2
      * @param n
      * @return Результирующий массив.
      */
-    public static int[] remove(int[] array, int m, int n)
+    public static int[] cutFromTo(int[] array, int m, int n)
     {
         if(m < 0 || n >= array.length)
         {
@@ -73,7 +78,7 @@ public class Task2
      */
     public static int[] remove(int[] arr, int from, int to, int filler)
     {
-        remove(arr, from, to);
+        cutFromTo(arr, from, to);
         return fillEnd(arr, to - from + 1, filler);
     }
 
