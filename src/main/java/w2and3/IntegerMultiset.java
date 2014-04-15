@@ -1,4 +1,4 @@
-package w2and3;
+package w3;
 
 import java.util.*;
 
@@ -13,93 +13,66 @@ import java.util.*;
  */
 public class IntegerMultiset
 {
-    private final TreeMap<Integer,Integer> container = new TreeMap<Integer, Integer>();
-    private Integer nextKey = 0;
-    
-    /** 
-     * Генератор ключа
-     * @return Следующий ключ
-     */
-    private Integer nextKey()
-    {
-        while(container.containsKey(nextKey))
-            ++nextKey;
-        return nextKey;
-    }
+    private final Map<Integer,Integer> container = new TreeMap<Integer, Integer>();
     
     /**
-     * Добавляет элемент "e"
-     * @param e
+     * Добавляет элемент "value"
+     * @param value
      * @return true, если в мультимножестве
      * уже есть такой элемент и false иначе
      */
-    public boolean add(Integer e)
+    public boolean add(Integer value)
     {
-        boolean contains = container.containsValue(e);
-        container.put(nextKey(), e);
+        boolean contains = container.containsKey(value);
+        container.put(value, contains ? container.get(value) + 1 : 1);
         return contains;
     }
+
     /**
-     * Есть ли элемент "e"?
-     * @param e
-     * @return true, если элемент "e" присутствует
+     * Есть ли элемент "value"?
+     * @param value
+     * @return true, если элемент "value" присутствует
      * в мультимножестве и false иначе
      */
-    public boolean contains(Integer e)
+    public boolean contains(Integer value)
     {
-        return container.containsValue(e);
+        return container.containsKey(value);
     }
+
     /**
-     * Удаляет один элемент "e"
-     * @param e
+     * Удаляет один элемент "value"
+     * @param value
      * @return true, если удаление имело место
-     * (т.е. "e" был в мультимножестве перед удалением)
+     * (т.е. "value" был в мультимножестве перед удалением)
      * и false иначе
      */
-    public boolean pop(Integer e)
+    public boolean pop(Integer value)
     {
-        boolean contains = container.containsValue(e);
+        boolean contains = container.containsKey(value);
         if(contains)
         {
-            for (Integer key : container.keySet()) 
-            {
-                if(container.get(key).equals(e))
-                {
-                    container.remove(key);
-                    break;
-                }
-            }
+            Integer quantity = container.get(value);
+            if(quantity > 1) container.put(value, quantity - 1);
+            else container.remove(value);
         }
         return contains;
     }
+    
     /**
-     * Удаляет все элементы, равные "e".
-     * @param e
+     * Удаляет все элементы, равные "value".
+     * @param value
      * @return true, если удаление имело место и false иначе
      */
-    public boolean remove(Integer e)
+    public boolean remove(Integer value)
     {
-        boolean contains = container.containsValue(e);
-        if(contains)
-        {
-            Integer[] keyList = container.keySet().toArray(new Integer[0]);
-            for (int key = 0 ; key < keyList.length; ++key) 
-            {
-                if(container.get(keyList[key]).equals(e))
-                {
-                    container.remove(keyList[key]);
-                }
-            }
-        }
+        boolean contains = container.containsKey(value);
+        container.remove(value);
         return contains;       
     }
     
     public void print()
     {
-        for(Integer i : container.values())
-        {
-            System.out.print(i + " ");
-        }
+        System.out.println(container);
         System.out.println();
     }
 } 
